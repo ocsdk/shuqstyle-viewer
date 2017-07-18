@@ -431,8 +431,8 @@ function select_detection_results(category_id, region_id) {
         return;
 
     // 여성 의류 both category_id로 변환
-    if ((category_id^F_BIT) <= 32)
-        category_id = category_id^F_BIT;
+    // if ((category_id^F_BIT) <= 32)
+    //     category_id = category_id^F_BIT;
 
     // remove class
     for (var i=0; i<detection_results_elems.length; i++) {
