@@ -2,7 +2,7 @@ var API_VERSION     = "v0";
 var API_HOST        = "https://dl-api.oddconcepts.kr";
 var API_PORT        = "";
 
-function api_detection_url(cb, url) {
+function api_detection_url(cb, url, category_hint) {
     var url = API_HOST + "/" + API_VERSION +
         "/detect?details=1&url=" + encodeURIComponent(url);
 
@@ -15,7 +15,7 @@ function api_detection_url(cb, url) {
             xhr.setRequestHeader("ApiKey", window.localStorage.getItem("apikey"));
         },
         success: function (data) {
-            return cb(data);
+            return cb(data, category_hint);
         },
         error: function (data) {
             return cb(null);
@@ -67,6 +67,29 @@ function api_search(cb, region_id, category_id, count) {
             xhr.setRequestHeader("ApiKey", window.localStorage.getItem("apikey"));
         },
         success: function (data) {
+            return cb(data);
+        },
+        error: function (data) {
+            return cb(null);
+        }
+    });
+}
+
+function api_search_advanced(cb, region_id, category_id, count, filter) {
+    var url = API_HOST + ":" + API_PORT + "/" + API_VERSION +
+            "/search/" + region_id + "?category=" + category_id + "&count=" + count;
+
+    $.ajax({
+        url: url,
+        data: null,
+        type: "post",
+        dataType: "json",
+        async: true,
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("ApiKey", window.localStorage.getItem("apikey"));
+            xhr.setRequestHeader("Content-Type", "application/json");
+        },
+        success: function(data) {
             return cb(data);
         },
         error: function (data) {

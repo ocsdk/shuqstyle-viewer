@@ -35,7 +35,7 @@ function upload() {
     extensions = ["image/jpeg", "image/png"];
 
     if (extensions.indexOf(extension) <0) {
-        alert(type + " is not supported.")
+        alert(type + " is not supported.");
         return
     }
 
@@ -59,7 +59,7 @@ function upload() {
     file[0].files[0].convertToBase64(function (base64) {
         window.localStorage.setItem("base64", base64);
         window.localStorage.setItem("extension", extension);
-        location.href = "./view.html?type=file";
+        location.href = "./view.html?type=file&category_hint=&filter=";
     });
 }
 
