@@ -60,7 +60,6 @@ function view_gsdemo(url, category_hint, filter) {
         alert('No API Key has been configured. Use the configuration dialog to set an API key.');
         return
     }
-    readMissingFile('demos/gsshop_missing.pkl');
     var image_url = url;
     if (category_hint != null) {
         location.href = "./view.html?type=url&url=" + encodeURIComponent(image_url) + '&category_hint=' + category_hint + '&filter=';
