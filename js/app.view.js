@@ -116,6 +116,8 @@ $(document).ready(function() {
         var score = null;
         var is_outers = false;
 
+        re_search = false;
+
         var classification_map_id = null;
         if (category_hint != null) {
             gender_hint = category_hint & (M_BIT | F_BIT);
@@ -181,7 +183,6 @@ $(document).ready(function() {
                 // select detection results
                 select_detection_results(category_id, region_id);
             }
-            re_search = true
         }
 
         if (top_category_id != null && top_region_id != null) {
@@ -201,6 +202,8 @@ $(document).ready(function() {
                 show_classification_results(details);
             }, 50);
         }
+
+        re_search = true;
 
         // init cropper
         init_cropper(image_url, region);
@@ -224,7 +227,7 @@ function get_sex(category_id) {
         return "female";
     if ((category_id^M_BIT) <= 32)
         return "male";
-    if (category_id <= 32)
+    if (category_id <= 32 || category_id^(F_BIT & M_BIT) <= 0)
         return "both";
 }
 
@@ -479,16 +482,16 @@ function init_search_category(region_id, category_id, init) {
     contents += "<div class='sex-list'>";
     if (current_sex == "male") {
         contents += "<a class=\"sex select\">Male</a>";
-        contents += "<a class=\"sex\" href=\"javascript:select_sex('female', '" + region_id + ","+ current_cate + "')\">Female</a>";
-        contents += "<a class=\"sex\" href=\"javascript:select_sex('both', '" + region_id + "," + current_cate + "')\">Both</a>";
+        contents += "<a class=\"sex\" href=\"javascript:select_sex('female', '" + region_id + "',"+ (current_cate | F_BIT + '') + ")\">Female</a>";
+        contents += "<a class=\"sex\" href=\"javascript:select_sex('both', '" + region_id + "'," + (current_cate | F_BIT | M_BIT + '') + ")\">Both</a>";
     }
     else if (current_sex == "female") {
-        contents += "<a class=\"sex\" href=\"javascript:select_sex('male', '" + region_id + "," + current_cate + "')\">Male</a>";
+        contents += "<a class=\"sex\" href=\"javascript:select_sex('male', '" + region_id + "'," + (current_cate | M_BIT + '') + ")\">Male</a>";
         contents += "<a class=\"sex select\">Female</a>";
-        contents += "<a class=\"sex\" href=\"javascript:select_sex('both', '" + region_id + "," + current_cate + "')\">Both</a>";
+        contents += "<a class=\"sex\" href=\"javascript:select_sex('both', '" + region_id + "'," + (current_cate | F_BIT | M_BIT + '') + ")\">Both</a>";
     } else if (current_sex == "both") {
-        contents += "<a class=\"sex\" href=\"javascript:select_sex('male', '" + region_id + "," + current_cate + "')\">Male</a>";
-        contents += "<a class=\"sex\" href=\"javascript:select_sex('female', '" + region_id + "," + current_cate + "')\">Female</a>";
+        contents += "<a class=\"sex\" href=\"javascript:select_sex('male', '" + region_id + "'," + (current_cate | M_BIT + '')+ ")\">Male</a>";
+        contents += "<a class=\"sex\" href=\"javascript:select_sex('female', '" + region_id + "'," + (current_cate | F_BIT + '') + ")\">Female</a>";
         contents += "<a class=\"sex select\">Both</a>";
     }
     contents += "</div>";
