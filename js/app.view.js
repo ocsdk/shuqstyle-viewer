@@ -114,15 +114,21 @@ $(document).ready(function() {
         var region_id = null;
         var details = null;
         var score = null;
+        var is_outers = false;
 
         var classification_map_id = null;
         if (category_hint != null) {
             gender_hint = category_hint & (M_BIT | F_BIT);
             cate_hint = category_hint & (DRESSES | PANTS | SHORTS | SKIRTS | TOPS | OUTERS);
+
+            if (cate_hint == OUTERS) {
+                is_outers = true;
+                cate_hint = TOPS;
+            }
         }
 
         if (results.status && keys.length > 0) {
-            if (category_hint != null && $.inArray(keys, cate_hint.toString())) {
+            if (category_hint != null && keys.includes(cate_hint + '')) {
                 region = list[cate_hint][0];
                 category_id = parseInt(cate_hint | gender_hint);
                 region_id = list[cate_hint][0].id;
@@ -179,6 +185,9 @@ $(document).ready(function() {
         }
 
         if (top_category_id != null && top_region_id != null) {
+            if (is_outers) {
+                category_id = gender_hint | OUTERS;
+            }
             select_sex(details.sex.label, region_id, category_id);
 
             gendered_category = category_id;
@@ -534,7 +543,7 @@ function search(region_id, category_id, init, use_scroll) {
         var elem = document.createElement("div");
         elem.className = "grid-item";
         elem.innerHTML = '<img class="thumbnail" src="images/spacer.gif" style="background-image: url(\'' + image_url + '\'); background-position: ' + background_pos + '">' +
-            '<a href="./view.html?type=url&url=' + encodeURIComponent(image_url) + '"><div class="view-button"><img src="images/icon_search.svg"></div></a>' +
+            '<a href="./view.html?type=url&url=' + encodeURIComponent(image_url) + '&category_hint=' + category_id + '&filter=' + '"><div class="view-button"><img src="images/icon_search.svg"></div></a>' +
             '<div class="name"><a href="' + link + '">' + name + '</a></div>' +
             '<div class="price"><a href="' + link + '">' + commify(price) + ' KRW</a></div>';
         var $elem = $(elem);
