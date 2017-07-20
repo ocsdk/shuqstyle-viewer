@@ -227,7 +227,7 @@ function get_sex(category_id) {
         return "female";
     if ((category_id^M_BIT) <= 32)
         return "male";
-    if (category_id <= 32 || category_id^(F_BIT & M_BIT) <= 0)
+    if (category_id <= 32)
         return "both";
 }
 
@@ -483,12 +483,12 @@ function init_search_category(region_id, category_id, init) {
     if (current_sex == "male") {
         contents += "<a class=\"sex select\">Male</a>";
         contents += "<a class=\"sex\" href=\"javascript:select_sex('female', '" + region_id + "',"+ (current_cate | F_BIT + '') + ")\">Female</a>";
-        contents += "<a class=\"sex\" href=\"javascript:select_sex('both', '" + region_id + "'," + (current_cate | F_BIT | M_BIT + '') + ")\">Both</a>";
+        contents += "<a class=\"sex\" href=\"javascript:select_sex('both', '" + region_id + "'," + (current_cate + '') + ")\">Both</a>";
     }
     else if (current_sex == "female") {
         contents += "<a class=\"sex\" href=\"javascript:select_sex('male', '" + region_id + "'," + (current_cate | M_BIT + '') + ")\">Male</a>";
         contents += "<a class=\"sex select\">Female</a>";
-        contents += "<a class=\"sex\" href=\"javascript:select_sex('both', '" + region_id + "'," + (current_cate | F_BIT | M_BIT + '') + ")\">Both</a>";
+        contents += "<a class=\"sex\" href=\"javascript:select_sex('both', '" + region_id + "'," + (current_cate + '') + ")\">Both</a>";
     } else if (current_sex == "both") {
         contents += "<a class=\"sex\" href=\"javascript:select_sex('male', '" + region_id + "'," + (current_cate | M_BIT + '')+ ")\">Male</a>";
         contents += "<a class=\"sex\" href=\"javascript:select_sex('female', '" + region_id + "'," + (current_cate | F_BIT + '') + ")\">Female</a>";
