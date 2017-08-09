@@ -92,7 +92,7 @@ $(document).ready(function() {
             hide_loader_modal();
             if (!results.status) {
                 alert(results.message);
-                location.href = "/";
+                location.href = "index.html";
             }
             else if (Object.keys(results['list']).length > 0) {
                 var category_key = Object.keys(results['list'])[0];
