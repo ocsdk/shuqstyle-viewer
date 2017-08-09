@@ -33,10 +33,10 @@ var CATEGORY = {
         {"name": "Outers", "caid": F_OUTERS}
     ],
     "both": [
-        {"name": "Tops", "caid": TOPS},
-        {"name": "Pants", "caid": PANTS},
-        {"name": "Shorts", "caid": SHORTS},
-        {"name": "Outers", "caid": OUTERS}
+        {"name": "Tops", "caid": TOPS|F_BIT|M_BIT},
+        {"name": "Pants", "caid": PANTS|F_BIT|M_BIT},
+        {"name": "Shorts", "caid": SHORTS|F_BIT|M_BIT},
+        {"name": "Outers", "caid": OUTERS|F_BIT|M_BIT}
     ]
 };
 
@@ -50,6 +50,7 @@ var CATEGORY_ID_TO_NAME = {
 };
 
 var current_image_url;
+var current_product_code;
 var current_image_size = {"width": 0, "height": 0};
 var current_sex;
 var current_category_ids = [];
@@ -75,146 +76,179 @@ $(document).ready(function() {
         var image_extension = localStorage.getItem("extension");
         var category_hint = null;
         var filter = null;
+    } else if (type == "code") {
+        var product_code = params["product_code"];
     } else {
         error_and_go_home("Unknown type");
         return;
     }
 
-    if (image_url == undefined)
-        error_and_go_home("Image url does not exist.");
+    if (product_code != undefined) {
+        current_product_code = product_code;
 
-    current_image_url = image_url;
+        var dupa_search_cb = function(results) {
+            var category_id = null;
 
-    // detect
-    var detection_cb = function (results, category_hint) {
-        if (results == null) {
-            alert("API request failed. This is most likely due to an invalid API key.");
-            location.href = "/";
-        }
-
-        hide_loader_modal();
-
-        var list = results.list;
-        var keys = [];
-        for (var k in results.list) {
-            keys.push(k);
-        }
-
-        var region = null;
-
-        var top_score = 0.0;
-        var top_category_id = null;
-        var top_region_id = null;
-        var top_details = null;
-
-        var gender_hint = null;
-        var cate_hint = null;
-
-        var category_id = null;
-        var region_id = null;
-        var details = null;
-        var score = null;
-        var is_outers = false;
-
-        re_search = false;
-
-        var classification_map_id = null;
-        if (category_hint != null) {
-            gender_hint = category_hint & (M_BIT | F_BIT);
-            cate_hint = category_hint & (DRESSES | PANTS | SHORTS | SKIRTS | TOPS | OUTERS);
-
-            if (cate_hint == OUTERS) {
-                is_outers = true;
-                cate_hint = TOPS;
+            if (results == null) {
+                alert("API request failed. This is most likely due to an invalid API key.");
+                location.href = "/";
             }
-        }
 
-        if (results.status && keys.length > 0) {
-            if (category_hint != null && keys.includes(cate_hint + '')) {
-                region = list[cate_hint][0];
-                category_id = parseInt(cate_hint | gender_hint);
-                region_id = list[cate_hint][0].id;
-                details = list[cate_hint][0].details;
-                score = list[cate_hint][0].score;
+            if (Object.keys(results).length > 0) {
+                var category_key = Object.keys(results)[0];
 
-                if (score > top_score) {
-                    top_score = score;
-                    top_category_id = category_id;
-                    top_region_id = region_id;
-                    top_details = details;
-                }
-
-                classification_map_id = category_id + '_' + region_id;
-                classification_map[classification_map_id] = details;
-
-                current_sex = get_sex(category_id);
-                details.sex.label = current_sex;
-
-                show_detection_results(list);
-
-                select_detection_results(top_category_id, top_region_id);
-            }
-            else if (list[keys[0]].length > 0) {
-                region = list[keys[0]][0];
-                category_id = parseInt(keys[0]);
-                region_id = list[keys[0]][0].id;
-                details = list[keys[0]][0].details;
-                score = list[keys[0]][0].score;
-
-                if (score > top_score) {
-                    top_score = score;
-                    top_category_id = category_id;
-                    top_region_id = region_id;
-                    top_details = details;
-                }
-
-                classification_map_id = category_id + '_' + region_id;
-                classification_map[classification_map_id] = details;
-
-                // 여성 의류 카테고리는 강제 변환
-                if (category_id == SKIRTS || category_id == DRESSES)
-                    category_id = category_id|F_BIT;
-
+                category_id = parseInt(category_key);
                 current_sex = get_sex(category_id);
 
-                // show detection results
-                show_detection_results(list);
-
-                // select detection results
-                select_detection_results(category_id, region_id);
+                hide_loader_modal();
+                search_with_product_code(results, category_id, false, false)
             }
-        }
+        };
 
-        if (top_category_id != null && top_region_id != null) {
-            if (is_outers) {
-                category_id = gender_hint | OUTERS;
+        document.getElementById("thumbnail_view").src = 'http://image.gsshop.com/image/' +
+            product_code.substring(0,2) + '/' +
+            product_code.substring(2, 4) + '/' +
+            product_code + '_L1.jpg';
+
+        show_loader_modal();
+        api_gsshop_search(dupa_search_cb, product_code);
+
+    } else if (image_url != undefined) {
+        current_image_url = image_url;
+
+        // detect
+        var detection_cb = function (results, category_hint) {
+            if (results == null) {
+                alert("API request failed. This is most likely due to an invalid API key.");
+                location.href = "/";
             }
-            select_sex(details.sex.label, region_id, category_id);
 
-            gendered_category = category_id;
-            gendered_category |= details.sex.label == 'male' ? M_BIT : F_BIT;
+            hide_loader_modal();
 
-            select_detection_results(gendered_category, region_id);
-        }
+            var list = results.list;
+            var keys = [];
+            for (var k in results.list) {
+                keys.push(k);
+            }
 
-        if (top_details != null) {
-            window.setTimeout(function() {
-                show_classification_results(details);
-            }, 50);
-        }
+            var region = null;
 
-        re_search = true;
+            var top_score = 0.0;
+            var top_category_id = null;
+            var top_region_id = null;
+            var top_details = null;
 
-        // init cropper
-        init_cropper(image_url, region);
-    };
+            var gender_hint = null;
+            var cate_hint = null;
 
-    show_loader_modal();
+            var category_id = null;
+            var region_id = null;
+            var details = null;
+            var score = null;
+            var is_outers = false;
 
-    if (type == "url")
-        api_detection_url(detection_cb, image_url, category_hint);
-    else if (type == "file")
-        api_detection_file(detection_cb, image_url, image_extension);
+            re_search = false;
+
+            var classification_map_id = null;
+            if (category_hint != null) {
+                gender_hint = category_hint & (M_BIT | F_BIT);
+                cate_hint = category_hint & (DRESSES | PANTS | SHORTS | SKIRTS | TOPS | OUTERS);
+
+                if (cate_hint == OUTERS) {
+                    is_outers = true;
+                    cate_hint = TOPS;
+                }
+            }
+
+            if (results.status && keys.length > 0) {
+                if (category_hint != null && keys.includes(cate_hint + '')) {
+                    region = list[cate_hint][0];
+                    category_id = parseInt(cate_hint | gender_hint);
+                    region_id = list[cate_hint][0].id;
+                    details = list[cate_hint][0].details;
+                    score = list[cate_hint][0].score;
+
+                    if (score > top_score) {
+                        top_score = score;
+                        top_category_id = category_id;
+                        top_region_id = region_id;
+                        top_details = details;
+                    }
+
+                    classification_map_id = category_id + '_' + region_id;
+                    classification_map[classification_map_id] = details;
+
+                    current_sex = get_sex(category_id);
+                    details.sex.label = current_sex;
+
+                    show_detection_results(list);
+
+                    select_detection_results(top_category_id, top_region_id);
+                }
+                else if (list[keys[0]].length > 0) {
+                    region = list[keys[0]][0];
+                    category_id = parseInt(keys[0]);
+                    region_id = list[keys[0]][0].id;
+                    details = list[keys[0]][0].details;
+                    score = list[keys[0]][0].score;
+
+                    if (score > top_score) {
+                        top_score = score;
+                        top_category_id = category_id;
+                        top_region_id = region_id;
+                        top_details = details;
+                    }
+
+                    classification_map_id = category_id + '_' + region_id;
+                    classification_map[classification_map_id] = details;
+
+                    // 여성 의류 카테고리는 강제 변환
+                    if (category_id == SKIRTS || category_id == DRESSES)
+                        category_id = category_id | F_BIT;
+
+                    current_sex = get_sex(category_id);
+
+                    // show detection results
+                    show_detection_results(list);
+
+                    // select detection results
+                    select_detection_results(category_id, region_id);
+                }
+            }
+
+            if (top_category_id != null && top_region_id != null) {
+                if (is_outers) {
+                    category_id = gender_hint | OUTERS;
+                }
+                select_sex(details.sex.label, region_id, category_id);
+
+                gendered_category = category_id;
+                gendered_category |= details.sex.label == 'male' ? M_BIT : F_BIT;
+
+                select_detection_results(gendered_category, region_id);
+            }
+
+            if (top_details != null) {
+                window.setTimeout(function () {
+                    show_classification_results(details);
+                }, 50);
+            }
+
+            re_search = true;
+
+            // init cropper
+            init_cropper(image_url, region);
+        };
+
+        show_loader_modal();
+
+        if (type == "url")
+            api_detection_url(detection_cb, image_url, category_hint);
+        else if (type == "file")
+            api_detection_file(detection_cb, image_url, image_extension);
+    } else {
+        error_and_go_home("parameter does not exist.");
+    }
 });
 
 function error_and_go_home(msg) {
@@ -223,12 +257,13 @@ function error_and_go_home(msg) {
 }
 
 function get_sex(category_id) {
-    if ((category_id^F_BIT) <= 32)
-        return "female";
-    if ((category_id^M_BIT) <= 32)
-        return "male";
-    if (category_id <= 32)
+    var gender = category_id & (M_BIT | F_BIT);
+    if (gender == (M_BIT|F_BIT))
         return "both";
+    if (gender == M_BIT)
+        return "male";
+    if (gender == F_BIT)
+        return "female";
 }
 
 function show_detection_results(list) {
@@ -591,6 +626,116 @@ function search(region_id, category_id, init, use_scroll) {
 
     api_search_advanced(search_cb, region_id, category_id, 34, null);
 }
+
+function search_with_product_code(results, category_id, init, use_scroll) {
+    document.getElementById("results_search").style.display = "block";
+
+    show_loader_modal();
+    show_detection_category(category_id, init);
+
+    // clear results
+    document.getElementById("search_list").innerHTML = "<div class='blank-space'>&nbsp;</div>";
+
+    var $grid = $("#search_list").masonry({
+        columnWidth: 1,
+        itemSelector: ".grid-item",
+        gutter: 5
+    });
+
+    function addItemElem(product_code, name, price, image_url, link) {
+        var elem = document.createElement("div");
+        elem.className = "grid-item";
+        elem.innerHTML = '<img class="thumbnail" src="images/spacer.gif" style="background-image: url(\'' + image_url + '\');' + '">' +
+            '<a href="./view.html?type=code&product_code=' + encodeURIComponent(product_code) + '"><div class="view-button"><img src="images/icon_search.svg"></div></a>' +
+            '<div class="name"><a href="' + link + '">' + name + '</a></div>' +
+            '<div class="price"><a href="' + link + '">' + commify(price) + ' KRW</a></div>';
+        var $elem = $(elem);
+        $grid.append($elem).masonry("appended", $elem);
+    }
+
+    document.querySelector('.blank-space').style.display = 'none';
+    hide_loader_modal();
+
+    var keys = [];
+    for (var k in results) {
+        keys.push(k);
+    }
+
+    if (keys.length > 0 && use_scroll) {
+//             scroll("search_list");
+    }
+
+    for (var i=0; i<keys.length; i++) {
+        var list = results[keys[i]];
+        for (var j=0; j<list.length; j++) {
+            // var r = list[j].region;
+            // var backgroundPos = Math.floor((r[0] + (r[2] - r[0]) / 2) /
+            //     list[j].size_info[0] * 100) + '% ';
+            addItemElem(list[j].product_code, list[j].name, list[j].price, list[j].image_url, list[j].product_url);
+        }
+    }
+
+    $grid.imagesLoaded(function() {
+        $grid.masonry();
+    });
+
+    // current_category_ids => category_id (multi category search)
+    category_id = 0;
+    for (var i=0; i<current_category_ids.length; i++) {
+        category_id |= current_category_ids[i];
+    }
+}
+
+
+function show_detection_category(category_id, init) {
+    var contents = "";
+
+    current_sex = get_sex(category_id);
+    var current_cate = category_id & (DRESSES | PANTS | SHORTS | SKIRTS | TOPS | OUTERS);
+
+    // Sex
+    contents += "<div class='sex-list'>";
+    if (current_sex == "male") {
+        contents += "<a class=\"sex select\">Male</a>";
+        contents += "<a class=\"sex\">Female</a>";
+        contents += "<a class=\"sex\">Both</a>";
+    }
+    else if (current_sex == "female") {
+        contents += "<a class=\"sex\">Male</a>";
+        contents += "<a class=\"sex select\">Female</a>";
+        contents += "<a class=\"sex\">Both</a>";
+    } else if (current_sex == "both") {
+        contents += "<a class=\"sex\">Male</a>";
+        contents += "<a class=\"sex\">Female</a>";
+        contents += "<a class=\"sex select\">Both</a>";
+    }
+    contents += "</div>";
+
+    if (!init) {
+        var ccids = current_category_ids.indexOf(category_id);
+        if (ccids < 0) {
+            current_category_ids.push(category_id);
+        } else {
+            if (current_category_ids.length > 1)
+                current_category_ids.splice(ccids, 1);
+        }
+    } else {
+        current_category_ids = [category_id];
+    }
+
+    // Category
+    contents += "<div class='category-list'>";
+    for (var i=0; i<CATEGORY[current_sex].length; i++) {
+        if (current_category_ids.indexOf((CATEGORY[current_sex][i].caid)) < 0)
+            contents += "<a class=\"category\">" + CATEGORY[current_sex][i].name + "</a>";
+        else
+            contents += "<a class=\"category select\">" + CATEGORY[current_sex][i].name + "</a>";
+    }
+    contents += "</div>";
+
+    document.getElementById("searchable_category_list").innerHTML = contents;
+}
+
 
 function show_loader_modal() {
     document.getElementById("loader_modal").style.display = "table";

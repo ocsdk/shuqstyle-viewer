@@ -97,3 +97,24 @@ function api_search_advanced(cb, region_id, category_id, count, filter) {
         }
     });
 }
+
+function api_gsshop_search(cb, product_code) {
+    var url = API_HOST + ":" + API_PORT + "/dupa/gsshop?product_code=" + product_code;
+
+    $.ajax({
+        url: url,
+        data: null,
+        type: "get",
+        dataType: "json",
+        async: true,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("ApiKey", window.localStorage.getItem("apikey"));
+        },
+        success: function (data) {
+            return cb(data);
+        },
+        error: function (data) {
+            return cb(null);
+        }
+    });
+}

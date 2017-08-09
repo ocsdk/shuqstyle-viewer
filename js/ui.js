@@ -24,7 +24,7 @@ $(document).ready(function() {
                 return $('#input_apikey').blur()
             }
             else if ($("#input_url").val() != '') {
-                view_gsdemo($("#input_url").val(), null, null);
+                view_gsdemo_with_product_code($("#input_url").val());
             }
         }
     });
@@ -32,7 +32,7 @@ $(document).ready(function() {
     $('#input_apikey').blur(function(e) {
         window.localStorage.setItem("apikey", e.target.value);
         $('#api-key-scrollin').css('margin-top', '-50px');
-    })
+    });
 
     var scroller = new FTScroller(document.querySelector('body'), {
         bouncing: false,
@@ -66,6 +66,16 @@ function view_gsdemo(url, category_hint, filter) {
     }
     else {
         location.href = "./view.html?type=url&url=" + encodeURIComponent(image_url) + '&category_hint=&filter=';
+    }
+}
+
+function view_gsdemo_with_product_code(product_code) {
+    if (window.localStorage.getItem("apikey") == null) {
+        alert('No API Key has been configured. Use the configuration dialog to set an API key.');
+        return
+    }
+    if (product_code != null) {
+        location.href = "./view.html?type=code&product_code=" + encodeURIComponent(product_code);
     }
 }
 

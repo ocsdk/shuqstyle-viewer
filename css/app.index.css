@@ -120,15 +120,16 @@
     text-align: left;
 }
 
-.main > .demo-inputs .input-url {
-    max-width: 600px;
+.navbar > .demo-inputs .input-url {
+    max-width: 300px;
     margin: 0 auto;
 }
 
-.main > .demo-inputs .input-url > input {
+.navbar > .demo-inputs .input-url > input {
     width: 100%;
     height: 50px;
     padding: 10px;
+    margin: 3px;
     box-sizing: border-box;
     font-size: 15px;
     font-weight: 200;

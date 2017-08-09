@@ -24,6 +24,25 @@
     font-weight: 200;
 }
 
+.navbar > .demo-inputs .input-url {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.navbar > .demo-inputs .input-url > input {
+    width: 100%;
+    height: 50px;
+    padding: 10px;
+    margin: 3px;
+    box-sizing: border-box;
+    font-size: 15px;
+    font-weight: 200;
+    border: 1px solid #dcdcdc;
+    border-radius: 0;
+    -webkit-appearance: none;
+}
+
+
 /* ============
    Cropper View
    ============ */
@@ -364,6 +383,7 @@ and (orientation: landscape) {
     width: 100%;
     display: block;
     background-size: cover;
+    background-position: center center;
     height: 200px;
 }
 
@@ -441,9 +461,9 @@ and (orientation: landscape) {
     width: 40px;
     height: 40px;
     padding: 10px;
-    margin: 0 auto;
+    margin: 30px auto;
     display: none;
-    position: fixed;
+    position: relative;
     left: 0;
     right: 0;
     bottom: 5%;
