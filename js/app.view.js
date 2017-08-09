@@ -89,19 +89,18 @@ $(document).ready(function() {
         var dupa_search_cb = function(results) {
             var category_id = null;
 
-            if (results == null) {
-                alert("API request failed. This is most likely due to an invalid API key.");
+            hide_loader_modal();
+            if (!results.status) {
+                alert(results.message);
                 location.href = "/";
             }
-
-            if (Object.keys(results).length > 0) {
-                var category_key = Object.keys(results)[0];
+            else if (Object.keys(results['list']).length > 0) {
+                var category_key = Object.keys(results['list'])[0];
 
                 category_id = parseInt(category_key);
                 current_sex = get_sex(category_id);
 
-                hide_loader_modal();
-                search_with_product_code(results, category_id, false, false)
+                search_with_product_code(results['list'], category_id, false, false)
             }
         };
 
