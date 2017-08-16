@@ -18,7 +18,7 @@ var F_DRESSES = F_BIT | DRESSES;
 var F_OUTERS = F_BIT | OUTERS;
 
 if (navigator.serviceWorker !== undefined) {
-    const path = 'js/shuqstyle-sw.js';
+    const path = './shuqstyle-sw.js';
     const scope = './';
 
     navigator.serviceWorker.register(path, {scope: scope})
