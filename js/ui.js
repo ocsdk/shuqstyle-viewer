@@ -17,6 +17,30 @@ var F_SKIRTS = F_BIT | SKIRTS;
 var F_DRESSES = F_BIT | DRESSES;
 var F_OUTERS = F_BIT | OUTERS;
 
+if (navigator.serviceWorker !== undefined) {
+    if (path == undefined) {
+        path = '/js/shuqstyle-sw.js';
+    }
+    if (scope == undefined) {
+        scope = './';
+    }
+
+    navigator.serviceWorker.register(path, {scope: scope})
+        .then(() => {
+            if (navigator.serviceWorker.controller) {
+                console.log('Controller ready.');
+            }
+            else {
+                console.warn('Document should be reloaded!');
+            }
+        })
+
+        .then(undefined, (e) => {
+            console.warn('Failed to initialize service worker.');
+            console.warn(e);
+        });
+}
+
 $(document).ready(function() {
     $("input[type=text]").keypress(function(e) {
         if (e.keyCode == 13) {
