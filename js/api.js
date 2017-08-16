@@ -3,7 +3,11 @@ var API_HOST        = "https://dl-api.oddconcepts.kr";
 var API_PORT        = "";
 
 function noise() {
-    return '' + n.getFullYear() + n.getMonth() + n.getDate() + n.getHours();
+    if (navigator.serviceWorker !== undefined) {
+        var n = new Date();
+        return '' + n.getFullYear() + n.getMonth() + n.getDate() + n.getHours();
+    }
+    return '';
 }
 
 function api_detection_url(cb, url, category_hint) {
