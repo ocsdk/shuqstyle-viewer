@@ -19,7 +19,7 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
     if (event.request.url.startsWith('https://dl-api.oddconcepts.kr') ||
-        (event.request.url.endsWith('.jpg') || event.request.url.endsWith('.png'))) {
+        ((event.request.url.endsWith('.jpg') || event.request.url.endsWith('.png')) && event.request.url.startsWith('https'))) {
         event.respondWith(
             caches.match(event.request).then((cachedResponse) => {
                 if (cachedResponse) {
