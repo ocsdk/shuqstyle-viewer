@@ -2,6 +2,10 @@ var API_VERSION     = "v0";
 var API_HOST        = "https://dl-api.oddconcepts.kr";
 var API_PORT        = "";
 
+function noise() {
+    return '' + n.getFullYear() + n.getMonth() + n.getDate() + n.getHours();
+}
+
 function api_detection_url(cb, url, category_hint) {
     var url = API_HOST + "/" + API_VERSION +
         "/detect?details=1&url=" + encodeURIComponent(url);
@@ -56,7 +60,7 @@ function api_detection_file(cb, base64, extension) {
 
 function api_search(cb, region_id, category_id, count) {
     var url = API_HOST + ":" + API_PORT + "/" + API_VERSION +
-        "/search/" + region_id + "?category=" + category_id + '&count=' + count;
+        "/search/" + region_id + "?category=" + category_id + '&count=' + count + '&rng=' + noise();
 
     $.ajax({
         url: url,
@@ -77,7 +81,7 @@ function api_search(cb, region_id, category_id, count) {
 
 function api_search_advanced(cb, region_id, category_id, count, filter) {
     var url = API_HOST + ":" + API_PORT + "/" + API_VERSION +
-            "/search/" + region_id + "?category=" + category_id + "&count=" + count;
+            "/search/" + region_id + "?category=" + category_id + "&count=" + count + '&rng=' + noise();
 
     $.ajax({
         url: url,
@@ -100,7 +104,8 @@ function api_search_advanced(cb, region_id, category_id, count, filter) {
 
 function api_gsshop_search(cb, product_code) {
     var url = API_HOST + ":" + API_PORT + "/dupa/gsshop?product_code=" + product_code +
-        "&lmr_classes=" + localStorage.getItem('classes') + "&lmr_constraints=" + localStorage.getItem('constraints');
+        "&lmr_classes=" + localStorage.getItem('classes') + "&lmr_constraints=" + localStorage.getItem('constraints')
+         + '&rng=' + noise();
 
     $.ajax({
         url: url,
