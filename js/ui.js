@@ -19,7 +19,7 @@ var F_OUTERS = F_BIT | OUTERS;
 
 if (navigator.serviceWorker !== undefined) {
     if (path == undefined) {
-        path = '/js/shuqstyle-sw.js';
+        path = 'js/shuqstyle-sw.js';
     }
     if (scope == undefined) {
         scope = './';
