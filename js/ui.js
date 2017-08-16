@@ -18,12 +18,8 @@ var F_DRESSES = F_BIT | DRESSES;
 var F_OUTERS = F_BIT | OUTERS;
 
 if (navigator.serviceWorker !== undefined) {
-    if (path == undefined) {
-        path = 'js/shuqstyle-sw.js';
-    }
-    if (scope == undefined) {
-        scope = './';
-    }
+    const path = 'js/shuqstyle-sw.js';
+    const scope = './';
 
     navigator.serviceWorker.register(path, {scope: scope})
         .then(() => {
