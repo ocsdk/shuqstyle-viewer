@@ -585,7 +585,7 @@ function search(region_id, category_id, init, use_scroll) {
     function addItemElem(name, price, link, image_url, background_pos) {
         var elem = document.createElement("div");
         elem.className = "grid-item";
-        elem.innerHTML = '<img class="thumbnail" src="images/spacer.gif" style="background-image: url(\'' + image_url + '\'); background-position: ' + background_pos + '">' +
+        elem.innerHTML = '<img class="thumbnail" src="images/spacer.gif" style="background-image: url(\'https://dl-img.oddconcepts.kr/' + image_url + '\'); background-position: ' + background_pos + '">' +
             '<a href="./view.html?type=url&url=' + encodeURIComponent(image_url) + '&category_hint=' + category_id + '&filter=' + '"><div class="view-button"><img src="images/icon_search.svg"></div></a>' +
             '<div class="name"><a href="' + link + '">' + name + '</a></div>' +
             '<div class="price"><a href="' + link + '">' + commify(price) + ' KRW</a></div>';
@@ -650,7 +650,7 @@ function search_with_product_code(results, category_id, init, use_scroll) {
     function addItemElem(product_code, name, price, image_url, link) {
         var elem = document.createElement("div");
         elem.className = "grid-item";
-        elem.innerHTML = '<img class="thumbnail" src="images/spacer.gif" style="background-image: url(\'' + image_url + '\');' + '">' +
+        elem.innerHTML = '<img class="thumbnail" src="images/spacer.gif" style="background-image: url(\'https://dl-img.oddconcepts.kr/' + image_url + '\');' + '">' +
             '<a href="./view.html?type=code&product_code=' + encodeURIComponent(product_code) + '"><div class="view-button"><img src="images/icon_search.svg"></div></a>' +
             '<div class="name"><a href="' + link + '">' + name + '</a></div>' +
             '<div class="price"><a href="' + link + '">' + commify(price) + ' KRW</a></div>';
