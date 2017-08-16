@@ -80,6 +80,14 @@ html, body {
     font-weight: 200;
 }
 
+.demo-inputs {
+    max-width: 960px;
+    margin: 0 auto;
+    height: 60px;
+    padding: 0 40px 0 40px;
+    background-color: #ffffff;
+}
+
 #api-key-scrollin {
     margin-top: -50px;
     -webkit-transition: margin 0.4s;

@@ -30,6 +30,22 @@
         </div>
     </div>
 </div>
+<div class="demobar" id="demobar">
+    <div class="inside">
+        <div class="demo-lmr-inputs">
+            <div class="input-lmr">
+                CLASSES_LMR :    <input type="range" id="classes_lmr_range" min="0" max="1" step="0.1" value="0.6"
+                       onchange="javascript:store_lmr('classes', this.value)">
+                CONSTRAINTS_LMR :<input type="range" id="constraints_lmr_range" min="0" max="1" step="0.1" value="0.6"
+                       onchange="javascript:store_lmr('constraints', this.value)">
+            </div>
+            <div class="input-lmr-box">
+                <input type="text" id="classes_lmr_box" value="" disabled>
+                <input type="text" id="constraints_lmr_box" value="" disabled>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="main">
     <div class="cropper-view">
         <div class="inside">

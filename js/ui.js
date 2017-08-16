@@ -47,7 +47,7 @@ $(document).ready(function() {
 
 function view_demo(url) {
     if (window.localStorage.getItem("apikey") == null) {
-        alert('No API Key has been configured. Use the configuration dialog to set an API key.')
+        alert('No API Key has been configured. Use the configuration dialog to set an API key.');
         return
     }
 
@@ -81,4 +81,9 @@ function view_gsdemo_with_product_code(product_code) {
 
 function show_api_key_scrollin() {
     $('#api-key-scrollin').css('margin-top', '0px');
+}
+
+function store_lmr(name, lmr) {
+    document.getElementById(name + '_lmr_box').value = lmr;
+    localStorage.setItem(name, lmr);
 }

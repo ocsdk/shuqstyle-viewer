@@ -78,6 +78,12 @@ $(document).ready(function() {
         var filter = null;
     } else if (type == "code") {
         var product_code = params["product_code"];
+
+        document.getElementById('classes_lmr_range').value = localStorage.getItem('classes');
+        store_lmr('classes', localStorage.getItem('classes'));
+
+        document.getElementById('constraints_lmr_range').value = localStorage.getItem('constraints');
+        store_lmr('constraints', localStorage.getItem('constraints'));
     } else {
         error_and_go_home("Unknown type");
         return;

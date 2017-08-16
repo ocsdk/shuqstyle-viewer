@@ -99,7 +99,8 @@ function api_search_advanced(cb, region_id, category_id, count, filter) {
 }
 
 function api_gsshop_search(cb, product_code) {
-    var url = API_HOST + ":" + API_PORT + "/dupa/gsshop?product_code=" + product_code;
+    var url = API_HOST + ":" + API_PORT + "/dupa/gsshop?product_code=" + product_code +
+        "&lmr_classes=" + localStorage.getItem('classes') + "&lmr_constraints=" + localStorage.getItem('constraints');
 
     $.ajax({
         url: url,
