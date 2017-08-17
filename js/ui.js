@@ -63,6 +63,14 @@ $(document).ready(function() {
 
     if (apiKey != null)
         $('#input_apikey').val(apiKey);
+
+    if (localStorage.getItem('classes') != null && localStorage.getItem('constraints') != null) {
+        document.getElementById('classes_lmr_range').value = localStorage.getItem('classes');
+        store_lmr('classes',  localStorage.getItem('classes'));
+
+        document.getElementById('constraints_lmr_range').value = localStorage.getItem('constraints');
+        store_lmr('constraints', localStorage.getItem('constraints'));
+    }
 });
 
 function view_demo(url) {
@@ -95,6 +103,10 @@ function view_gsdemo_with_product_code(product_code) {
         return
     }
     if (product_code != null) {
+        if (localStorage.getItem('classes') == null || localStorage.getItem('constraints') == null) {
+            localStorage.setItem('classes', document.getElementById('classes_lmr_box').value);
+            localStorage.setItem('constraints', document.getElementById('constraints_lmr_box').value);
+        }
         location.href = "./view.html?type=code&product_code=" + encodeURIComponent(product_code);
     }
 }
